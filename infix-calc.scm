@@ -1,22 +1,26 @@
-(for-each (lambda (file)
-            (load-relative file))
-          '("shunting-yard.scm"
-            "rd-parser.scm"
-            "postfix-evaluator.scm"))
+#lang racket
+(require "shunting-yard.scm"
+         "rd-parser.scm"
+         "postfix-evaluator.scm")
+
+(provide calc)
 
 (define (infix-calc eqn)
   (postfix-eval (shunting-yard eqn)))
 
 (define (calc eqn)
-  (if (parse (tokenize (string->list eqn)))
-      (infix-calc (tokenize (string->list eqn)))
-      (display "Error: Malformed equation. Unable to compute.\n")))
+  (let ([tokens (tokenize (string->list eqn))])
+    (if (parse tokens)
+        (infix-calc tokens)
+        (display "Error: Malformed equation. Unable to compute.\n"))))
 
 ;; Is the character provided a numerical digit?
-(define (digit-char? char)
-  (> 10
-     (- (char->integer char) (char->integer #\0))
-     (- 1)))
+#;(define (digit-char? char)
+    (> 10
+       (- (char->integer char) (char->integer #\0))
+       (- 1)))
+
+; (define digit-char? char-numeric?)
 
 (define (length lst)
   (if (null? lst)

@@ -1,6 +1,6 @@
-(for-each (lambda (file)
-            (load-relative file))
-          '("shunting-yard.scm"))
+#lang racket
+(require "shunting-yard.scm")
+(provide (all-defined-out))
 
 (define (factorial n)
   (if (= n 0)
@@ -46,16 +46,19 @@
   (/ (expt x y) (factorial y)))
    
 (define (char->operator char)
-  (cond ((eq? char #\+) '+)
-        ((eq? char #\-) '-)
-        ((eq? char #\*) '*)
-        ((eq? char #\/) '/)
-        ((eq? char #\%) 'remainder)
-        ((eq? char #\!) 'factorial)
-        ((eq? char #\^) 'expt)
-        ((eq? char #\=) '=)
-        ((eq? char #\<) '<)
-        ((eq? char #\>) '>)))
+  (cond ((eq? char #\+) +)
+        ((eq? char #\-) -)
+        ((eq? char #\*) *)
+        ((eq? char #\/) /)
+        ((eq? char #\%) remainder)
+        ((eq? char #\!) factorial)
+        ((eq? char #\^) expt)
+        ((eq? char #\=) =)
+        ((eq? char #\<) <)
+        ((eq? char #\>) >)))
+
+; > (shunting-yard (tokenize (string->list "1*2*3*4")))
+; '(1 2 #\* 3 #\* 4 #\*)
 
 (define (%postfix-eval eqn stack)
   (cond ((null? eqn) stack)
@@ -65,14 +68,12 @@
          ;; Factorial takes one argument, while all
          ;; other operators take two arguments.
          (if (not (eq? (car eqn) #\!))
-             (%postfix-eval (cdr eqn) (cons (eval
-                                             `(,(char->operator (car eqn))
-                                               ,(cadr stack)
-                                               ,(car stack)))
+             (%postfix-eval (cdr eqn) (cons ((char->operator (car eqn))
+                                             (cadr stack)
+                                             (car stack))
                                             (cddr stack)))
-             (%postfix-eval (cdr eqn) (cons (eval
-                                             `(,(char->operator (car eqn))
-                                               ,(car stack)))
+             (%postfix-eval (cdr eqn) (cons ((char->operator (car eqn))
+                                             (car stack))
                                             (cdr stack)))))
         (else (%postfix-eval (cdr eqn) stack))))
   

@@ -1,3 +1,6 @@
+#lang racket
+(provide (all-defined-out))
+
 ;;; For Dijkstra's Shunting-yard Algorithm
 
 ;; Determines if a given token from a string is a mathematical operator
@@ -29,10 +32,12 @@
 ;;     (error "last is broken"))
 
 ;; Is the character provided a numerical digit?
-(define (digit-char? char)
+#;(define (digit-char? char)
   (> 10
      (- (char->integer char) (char->integer #\0))
      (- 1)))
+
+(define digit-char? char-numeric?)
 
 ;; (if  (digit-char? #\/)
 ;;     (error "digit-char? is broken"))

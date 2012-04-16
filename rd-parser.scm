@@ -1,3 +1,6 @@
+#lang racket
+(provide (all-defined-out))
+
 ;;; Parses mathematical expressions using Recursive Descent
 
 (define (number stmt)
